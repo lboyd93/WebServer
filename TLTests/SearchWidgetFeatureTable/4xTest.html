@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>Search widget with multiple sources - 4.12</title>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.12/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.12/"></script>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer",
+        "esri/widgets/Search"
+      ], function(Map, MapView, FeatureLayer, Search) {
+        var map = new Map({
+          basemap: "dark-gray"
+        });
+
+        var view = new MapView({
+          container: "viewDiv",
+          map: map,
+          center: [-97, 38], // lon, lat
+          scale: 10000000
+        });
+
+        var featureLayerSenators = new FeatureLayer({
+          url:
+            "https://sampleserver6.arcgisonline.com/arcgis/rest/services/ServiceRequest/FeatureServer/1",
+        
+        });
+        
+        
+        featureLayerSenators.load();
+        
+
+        var searchWidget = new Search({
+          view: view,
+          allPlaceholder: "Test",
+          sources: [
+            {
+              layer: featureLayerSenators,
+              searchFields: ["requestid"],
+              displayField: "requestid",
+              suggestionTemplate: "${requestid}",
+              exactMatch: false,
+              outFields: ["DISTRICTID", "NAME", "PARTY"],
+              name: "requestid",
+              placeholder: "requestid"
+            }
+          ]
+        });
+
+        // Add the search widget to the top left corner of the view
+        view.ui.add(searchWidget, {
+          position: "top-right"
+        });
+        
+        searchWidget.on()
+        
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>

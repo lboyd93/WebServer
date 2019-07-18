@@ -43,31 +43,63 @@
           scale: 10000000
         });
 
-        var featureLayerSenators = new FeatureLayer({
+        var table = new FeatureLayer({
           url:
             "https://sampleserver6.arcgisonline.com/arcgis/rest/services/ServiceRequest/FeatureServer/1",
         
         });
         
+        table.load();
         
-        featureLayerSenators.load();
+
         
+
+        // var searchWidget = new Search({
+        //   view: view,
+        //   allPlaceholder: "Test Table Source",
+        //   sources: [
+        //     {
+        //       layer: table,
+        //       searchFields: ["requestid"],
+        //       displayField: "requestid",
+        //       suggestionTemplate: "{requestid}",
+        //       placeholder: "requestid",
+        //       exactMatch: false,
+        //       outFields: ["*"],
+        //       name: "requestid",
+        //       placeholder: "requestid"
+        //     }
+        //   ]
+        // });
+
+        var featureLayerDistricts = new FeatureLayer({
+          url:
+            "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/CongressionalDistricts/FeatureServer/0",
+          popupTemplate: {
+            // autocasts as new PopupTemplate()
+            title: "Congressional District {DISTRICTID} </br>{NAME},{PARTY}",
+            overwriteActions: true
+          }
+        });
 
         var searchWidget = new Search({
           view: view,
-          allPlaceholder: "Test",
+          allPlaceholder: "District or Senator",
           sources: [
             {
-              layer: featureLayerSenators,
-              searchFields: ["requestid"],
-              displayField: "requestid",
-              suggestionTemplate: "${requestid}",
+              layer: featureLayerDistricts,
+              searchFields: ["DISTRICTID"],
+              displayField: "DISTRICTID",
               exactMatch: false,
               outFields: ["DISTRICTID", "NAME", "PARTY"],
-              name: "requestid",
-              placeholder: "requestid"
+              name: "Congressional Districts",
+              placeholder: "example: 3708"
             }
           ]
+        });
+
+        searchWidget.on("search-complete", function(event){
+            console.log(event.numResults);
         });
 
         // Add the search widget to the top left corner of the view
@@ -75,7 +107,7 @@
           position: "top-right"
         });
         
-        searchWidget.on()
+        
         
       });
     </script>

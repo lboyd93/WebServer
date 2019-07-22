@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sublayer Test</title>
+
+    <style>
+        html,
+        body,
+        #mapView {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.12/esri/themes/light/main.css?a=1" />
+    <script src="https://js.arcgis.com/4.12/"></script>
+
+    <script>
+        require(["esri/Map", "esri/views/MapView", "esri/layers/MapImageLayer", "dojo/domReady!"], function (Map, MapView, MapImageLayer) {
+
+            var layer = new MapImageLayer({
+                url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Military/MapServer",
+                sublayers: [
+                    {
+                        id: 1,
+                        visible: true
+                    },
+                    // {
+                    //     id: 3,
+                    //     visible: true
+                    // },
+                    // {
+                    //     id: 4,
+                    //     visible: true
+                    // }
+                ]
+            });
+
+            var map = new Map({
+                layers: [layer]
+            });
+
+            var mapview = new MapView({
+                container: 'mapView',
+                map: map
+            });
+
+
+        });
+    </script>
+
+</head>
+
+<body>
+    <div id="mapView"></div>
+</body>
+
+</html>

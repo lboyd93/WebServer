@@ -26,17 +26,19 @@
 
             var layer = new MapImageLayer({
                 url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Military/MapServer",
+                //changing this sublayer value to a sublayer within a sublayer does not load the data
                 sublayers: [
                     {
                         id: 1,
                         visible: true
                     },
+                    {
+                        id: 2,
+                        visible: true
+                    }
+                    
                     // {
                     //     id: 3,
-                    //     visible: true
-                    // },
-                    // {
-                    //     id: 4,
                     //     visible: true
                     // }
                 ]

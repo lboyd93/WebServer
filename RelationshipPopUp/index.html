@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Relationship Query Test</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <style>
+            html,
+            body,
+            #viewDiv {
+              padding: 0;
+              margin: 0;
+              height: 100%;
+              width: 100%;
+            }
+          </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.12/esri/themes/light/main.css?a=1" />
+    <script src="https://js.arcgis.com/4.12/"></script>
+
+    <script>
+        require(["esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/tasks/QueryTask", "esri/tasks/support/RelationshipQuery", "esri/tasks/support/Query", "dojo/domReady!"],
+            function (Map, MapView, FeatureLayer, QueryTask, RelationshipQuery, Query) {
+
+                var map = new Map({
+                    basemap: "streets"
+                });
+                var view = new MapView({
+                    container: "viewDiv",
+                    map: map,
+                    center: [-118.399400711028, 34.08713590709093],
+                    zoom: 16
+                });
+
+                var treesURL = "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/Beverly%20Hills%20Trees%20By%20Block/FeatureServer/0"; // Represents the REST endpoint for a layer of cities.
+
+                var featureLayer = new FeatureLayer({
+                    url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/Beverly%20Hills%20Trees%20By%20Block/FeatureServer/0"
+                });
+
+                map.add(featureLayer);
+
+                var queryTask = new QueryTask({
+                    url: treesURL
+                });
+
+
+                var relationshipID = 0;
+                // specify relationship query parameter
+                const query = new RelationshipQuery({
+                    outFields: ["*"],
+                    relationshipId : relationshipID,
+                    where: "1=1"
+                });
+
+                // query related features that meet the query parameters
+                //returns a feature set of related features based off the query
+                queryTask.executeRelationshipQuery(query).then(function (results) {
+                    console.log("queryTask results", results);
+                    
+                })
+                    .catch(function (error) {
+                        console.log("query task error", error);
+                    });
+
+            });
+
+    </script>
+</head>
+
+<body>
+    <div id="viewDiv"></div>
+</body>
+
+
+
+</html>

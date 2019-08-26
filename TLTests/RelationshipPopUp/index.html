@@ -38,10 +38,15 @@
                 var treesURL = "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/Beverly%20Hills%20Trees%20By%20Block/FeatureServer/0"; // Represents the REST endpoint for a layer of cities.
 
                 var featureLayer = new FeatureLayer({
-                    url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/Beverly%20Hills%20Trees%20By%20Block/FeatureServer/0"
+                    url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/Beverly%20Hills%20Trees%20By%20Block/FeatureServer/0",
+                    popupEnabled: true,
+
                 });
 
                 map.add(featureLayer);
+
+
+                view.when
 
                 var relationshipID = 0;
                 var objectIds = [26291];
@@ -54,25 +59,33 @@
                     returnGeometry: true
                 });
 
-                // query related features for given objectIds
-                featureLayer.queryRelatedFeatures(query).then(function (result) {
-                    objectIds.forEach(function (objectId) {
-                        // print out the attributes of related features if the result
-                        // is returned for the specified objectId
-                        if (result[objectId]) {
-                            console.group("relationship for feature:", objectId)
-                            result[objectId].features.forEach(function (feature) {
-                                console.log("attributes", JSON.stringify(feature.attributes));
-                                console.log(feature.attributes);
-                            });
-                            console.groupEnd();
-                        }
-                    });
-                }).catch(function (error) {
-                    console.log("error from queryRelatedFeatures", error);
-                });
+                var template = {
+                    title: "Related Records"
+                };
 
-               
+                var content, graphicAttributes;
+
+                    // query related features for given objectIds
+                    featureLayer.queryRelatedFeatures(query).then(function (result) {
+                        objectIds.forEach(function (objectId) {
+                            // print out the attributes of related features if the result
+                            // is returned for the specified objectId
+                            if (result[objectId]) {
+                                console.group("relationship for feature:", objectId)
+                                result[objectId].features.forEach(function (feature) {
+                                    console.log("attributes: ", JSON.stringify(feature.attributes));
+
+                                    content= content + JSON.stringify(feature.attributes);
+
+                            });
+                                console.groupEnd();
+                            }
+                        });
+                    }).catch(function (error) {
+                        console.log("error from queryRelatedFeatures", error);
+                    });
+
+                
             });
 
 

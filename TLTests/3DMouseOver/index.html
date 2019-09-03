@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>Intro to SceneLayer - 4.12</title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.12/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.12/"></script>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/SceneView",
+        "esri/layers/SceneLayer"
+      ], function(Map, SceneView, SceneLayer) {
+
+           // This variable will store the highlight handle that is used to remove the highlight
+        var highlight = null;
+
+        // Create Map
+        var map = new Map({
+          basemap: "dark-gray",
+          ground: "world-elevation"
+        });
+
+        // Create the SceneView
+        var view = new SceneView({
+          container: "viewDiv",
+          map: map,
+          camera: {
+            position: [-74.0338, 40.6913, 707],
+            tilt: 81,
+            heading: 50
+          }
+        });
+
+        // Create SceneLayer and add to the map
+        var sceneLayer = new SceneLayer({
+          portalItem: {
+            id: "2e0761b9a4274b8db52c4bf34356911e"
+          },
+          popupEnabled: false
+        });
+        map.add(sceneLayer);
+
+        console.log(sceneLayer.title);
+
+        // Create MeshSymbol3D for symbolizing SceneLayer
+        var symbol = {
+          type: "mesh-3d", // autocasts as new MeshSymbol3D()
+          symbolLayers: [
+            {
+              type: "fill", // autocasts as new FillSymbol3DLayer()
+              // If the value of material is not assigned, the default color will be grey
+              material: {
+                color: [244, 247, 134]
+              }
+            }
+          ]
+        };
+        // Add the renderer to sceneLayer
+        sceneLayer.renderer = {
+          type: "simple", // autocasts as new SimpleRenderer()
+          symbol: symbol
+        };
+
+        view.on("pointer-move", function(evt){
+            view.hitTest({x:evt.x, y:evt.y}).then(function(response){
+                var graphic = response.results[0] ? response.results[0].graphic :null;
+                console.log(graphic);
+                
+                //this does not work, need more logic to implement
+                if(graphic && (graphic.layer.title === "Test")){
+                    var query = new Query();
+                    query.where = "OBJECTID = '" + graphic.attributes.OBJECTID + "'";
+                    sceneLayer.queryFeatures(query).then(function(featureSet){
+                        var feaure = featureSet.featres[0];
+                        highlight = sceneLayer.highlight(feature);
+                    });
+
+                    //highlight = sceneLayer.highlight(feature);
+
+                }
+            });
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
